@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA Kelas VII - Hakikat Sains & Metode Ilmiah</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        /* Form Identitas */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Kuis Header */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .question-box {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+
+        .option-item {
+            background: #f9fafb;
+            border: 2px solid var(--border-color);
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .option-item.selected {
+            background: #e0e7ff;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 12px;
+            display: inline-block;
+            width: 24px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Result Screen Styles */
+        #result-screen {
+            text-align: center;
+        }
+
+        #result-screen h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        #result-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .student-info-result {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Halaman Input Identitas -->
+        <div id="login-screen">
+            <h1>Kuis IPA Kelas VII</h1>
+            <div class="subtitle">Hakikat Sains dan Metode Ilmiah</div>
+            
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" placeholder="Masukkan nama Anda..." autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" placeholder="Contoh: VII A..." autocomplete="off">
+            </div>
+
+            <div class="btn-container">
+                <button id="start-btn" class="btn" onclick="startQuiz()" disabled>Mulai Kuis</button>
+            </div>
+        </div>
+
+        <!-- Halaman Kuis -->
+        <div id="quiz-screen" class="hidden">
+            <div class="quiz-header">
+                <span id="student-tag"></span>
+                <span id="question-counter">Soal 1 dari 20</span>
+            </div>
+
+            <div class="question-box" id="question-text">
+                Pertanyaan akan muncul di sini...
+            </div>
+
+            <ul class="options-list" id="options-list">
+                <!-- Opsi jawaban akan di-generate via JavaScript -->
+            </ul>
+
+            <div class="btn-container">
+                <button id="next-btn" class="btn" disabled>Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Halaman Hasil / Skor Akhir -->
+        <div id="result-screen" class="hidden">
+            <h2>Kuis Selesai!</h2>
+            <div class="student-info-result" id="result-info"></div>
+            <p id="score-text" style="font-size: 1.3rem; font-weight: bold; margin-bottom: 25px;"></p>
+            <button class="btn" onclick="restartQuiz()">Ulangi Kuis</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Apa definisi yang paling tepat mengenai sains?",
+                options: [
+                    "Ilmu pengetahuan yang mempelajari tentang mesin dan teknologi",
+                    "Ilmu pengetahuan sistematis tentang alam dan dunia fisik yang diperoleh melalui observasi dan eksperimen",
+                    "Kumpulan mitos dan legenda tentang asal-usul bumi",
+                    "Cara menghafal berbagai macam rumus matematika dan fisika"
+                ],
+                answer: 1
+            },
+            {
+                question: "Cabang ilmu sains yang mempelajari tentang berbagai jenis makhluk hidup, mulai dari mikroskopis hingga ekosistem adalah...",
+                options: [
+                    "Fisika",
+                    "Kimia",
+                    "Biologi",
+                    "Astronomi"
+                ],
+                answer: 2
+            },
+            {
+                question: "Ilmuwan yang mempelajari tentang gejala alam yang tidak hidup, materi, energi, gaya, dan gerak adalah cabang ilmu...",
+                options: [
+                    "Fisika",
+                    "Biologi",
+                    "Geologi",
+                    "Ekologi"
+                ],
+                answer: 0
+            },
+            {
+                question: "Langkah awal yang paling tepat dalam memulai sebuah metode ilmiah adalah...",
+                options: [
+                    "Melakukan eksperimen langsung",
+                    "Membuat laporan penelitian",
+                    "Melakukan observasi (pengamatan) dan merumuskan masalah",
+                    "Menarik kesimpulan akhir"
+                ],
+                answer: 2
+            },
+            {
+                question: "Dugaan sementara atau jawaban sementara terhadap rumusan masalah penelitian disebut...",
+                options: [
+                    "Kesimpulan",
+                    "Hipotesis",
+                    "Variabel",
+                    "Data"
+                ],
+                answer: 1
+            },
+            {
+                question: "Faktor atau kondisi yang dapat berubah atau mempengaruhi jalannya eksperimen disebut...",
+                options: [
+                    "Hipotesis",
+                    "Variabel",
+                    "Konstanta",
+                    "Indikator"
+                ],
+                answer: 1
+            },
+            {
+                question: "Jenis variabel yang sengaja diubah atau dimanipulasi oleh peneliti dalam suatu percobaan dinamakan...",
+                options: [
+                    "Variabel kontrol",
+                    "Variabel terikat",
+                    "Variabel bebas",
+                    "Variabel tetap"
+                ],
+                answer: 2
+            },
+            {
+                question: "Variabel yang hasil pengukurannya diamati dan diukur sebagai akibat dari perubahan variabel bebas disebut...",
+                options: [
+                    "Variabel terikat",
+                    "Variabel bebas",
+                    "Variabel manipulasi",
+                    "Variabel awal"
+                ],
+                answer: 0
+            },
+            {
+                question: "Faktor-faktor dalam percobaan yang harus dijaga agar tetap sama/konstan agar tidak mempengaruhi hasil eksperimen disebut...",
+                options: [
+                    "Variabel bebas",
+                    "Variabel terikat",
+                    "Variabel kontrol",
+                    "Variabel acak"
+                ],
+                answer: 2
+            },
+            {
+                question: "Alat laboratorium berbentuk tabung yang digunakan untuk mencampur, memanaskan, atau menampung cairan kimia dalam jumlah sedang adalah...",
+                options: [
+                    "Gelas ukur",
+                    "Gelas kimia (Beaker glass)",
+                    "Pipet tetes",
+                    "Cawan petri"
+                ],
+                answer: 1
+            },
+            {
+                question: "Alat yang digunakan untuk mengukur volume cairan dengan tingkat ketelitian yang cukup tinggi di laboratorium adalah...",
+                options: [
+                    "Gelas kimia",
+                    "Tabung reaksi",
+                    "Gelas ukur",
+                    "Labu erlenmeyer"
+                ],
+                answer: 2
+            },
+            {
+                question: "Simbol bahan kimia berupa gambar tengkorak dan tulang bersilang menunjukkan bahwa bahan tersebut bersifat...",
+                options: [
+                    "Mudah meledak",
+                    "Beracun (Toxic)",
+                    "Mudah terbakar",
+                    "Korosif"
+                ],
+                answer: 1
+            },
+            {
+                question: "Sikap ilmiah yang harus dimiliki oleh seorang ilmuwan ketika melihat hasil eksperimen yang tidak sesuai dengan hipotesisnya adalah...",
+                options: [
+                    "Memanipulasi data agar sesuai hipotesis",
+                    "Menyembunyikan hasil percobaan",
+                    "Jujur dan objektif dalam mencatat data apa adanya",
+                    "Marah dan menghentikan percobaan"
+                ],
+                answer: 2
+            },
+            {
+                question: "Data dalam metode ilmiah yang berupa angka, pengukuran, dan dapat dihitung disebut data...",
+                options: [
+                    "Kualitatif",
+                    "Kuantitatif",
+                    "Deskriptif",
+                    "Spekulatif"
+                ],
+                answer: 1
+            },
+            {
+                question: "Data yang mendeskripsikan karakteristik objek atau fenomena berupa warna, bau, atau bentuk tanpa menggunakan angka disebut data...",
+                options: [
+                    "Kuantitatif",
+                    "Kualitatif",
+                    "Statistik",
+                    "Numerik"
+                ],
+                answer: 1
+            },
+            {
+                question: "Setelah melakukan eksperimen dan menganalisis data, langkah selanjutnya dalam metode ilmiah adalah...",
+                options: [
+                    "Merumuskan masalah baru",
+                    "Menarik kesimpulan (mengevaluasi hipotesis)",
+                    "Mengubah hipotesis diam-diam",
+                    "Membuang data yang salah"
+                ],
+                answer: 1
+            },
+            {
+                question: "Mengapa penting menuliskan laporan hasil percobaan dengan sistematis dan jelas?",
+                options: [
+                    "Agar laporan terlihat tebal dan indah",
+                    "Agar penelitian dapat direplikasi/diuji ulang oleh orang lain",
+                    "Agar mendapat nilai tinggi dari guru saja",
+                    "Agar rahasia percobaan tidak diketahui orang"
+                ],
+                answer: 1
+            },
+            {
+                question: "Alat keselamatan kerja di laboratorium yang wajib digunakan untuk melindungi mata dari percikan bahan kimia berbahaya adalah...",
+                options: [
+                    "Masker kimia",
+                    "Kacamata pelindung (Goggles)",
+                    "Sarung tangan karet",
+                    "Jas lab"
+                ],
+                answer: 1
+            },
+            {
+                question: "Manakah di bawah ini yang merupakan contoh penerapan ilmu sains dalam kehidupan sehari-hari?",
+                options: [
+                    "Membuat ramalan nasib berdasarkan zodiak",
+                    "Menemukan vaksin untuk mencegah penyakit menular",
+                    "Mempercayai mitos pohon angker di tengah desa",
+                    "Menebang hutan tanpa aturan demi keuntungan pribadi"
+                ],
+                answer: 1
+            },
+            {
+                question: "Jika hasil eksperimen menolak hipotesis awal kita, maka tindakan yang benar adalah...",
+                options: [
+                    "Menyatakan percobaan gagal total dan putus asa",
+                    "Mengubah hasil data percobaan agar diterima",
+                    "Menerima kenyataan bahwa hipotesis salah dan menganalisis mengapa hal itu terjadi",
+                    "Menghapus catatan percobaan"
+                ],
+                answer: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+        let studentName = "";
+        let studentClass = "";
+
+        const inputNama = document.getElementById("nama");
+        const inputKelas = document.getElementById("kelas");
+        const startBtn = document.getElementById("start-btn");
+        const loginScreen = document.getElementById("login-screen");
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultScreen = document.getElementById("result-screen");
+        
+        const questionCounter = document.getElementById("question-counter");
+        const studentTag = document.getElementById("student-tag");
+        const questionText = document.getElementById("question-text");
+        const optionsList = document.getElementById("options-list");
+        const nextBtn = document.getElementById("next-btn");
+        const scoreText = document.getElementById("score-text");
+        const resultInfo = document.getElementById("result-info");
+
+        // Validasi input nama dan kelas agar tombol mulai aktif
+        function validateForm() {
+            if (inputNama.value.trim() !== "" && inputKelas.value.trim() !== "") {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        inputNama.addEventListener("input", validateForm);
+        inputKelas.addEventListener("input", validateForm);
+
+        function startQuiz() {
+            studentName = inputNama.value.trim();
+            studentClass = inputKelas.value.trim();
+
+            loginScreen.classList.add("hidden");
+            quizScreen.classList.remove("hidden");
+            studentTag.innerText = `${studentName} (${studentClass})`;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            selectedOption = null;
+            nextBtn.disabled = true;
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionCounter.innerText = `Soal ${currentQuestionIndex + 1} dari ${quizData.length}`;
+            questionText.innerText = currentQuestion.question;
+
+            optionsList.innerHTML = "";
+            const optionLabels = ['A', 'B', 'C', 'D'];
+
+            currentQuestion.options.forEach((option, index) => {
+                const li = document.createElement("li");
+                li.classList.add("option-item");
+                
+                const spanLabel = document.createElement("span");
+                spanLabel.classList.add("option-label");
+                spanLabel.innerText = optionLabels[index] + ".";
+                
+                const spanText = document.createElement("span");
+                spanText.innerText = option;
+
+                li.appendChild(spanLabel);
+                li.appendChild(spanText);
+
+                li.addEventListener("click", () => selectOption(index, li));
+                optionsList.appendChild(li);
+            });
+        }
+
+        function selectOption(index, element) {
+            document.querySelectorAll(".option-item").forEach(item => {
+                item.classList.remove("selected");
+            });
+
+            element.classList.add("selected");
+            selectedOption = index;
+            nextBtn.disabled = false;
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (selectedOption === quizData[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        function showResult() {
+            quizScreen.classList.add("hidden");
+            resultScreen.classList.remove("hidden");
+            
+            resultInfo.innerHTML = `
+                <strong>Nama:</strong> ${studentName}<br>
+                <strong>Kelas:</strong> ${studentClass}
+            `;
+            scoreText.innerText = `Skor Anda ${score} dari ${quizData.length}`;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            inputNama.value = "";
+            inputKelas.value = "";
+            startBtn.disabled = true;
+            resultScreen.classList.add("hidden");
+            loginScreen.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
